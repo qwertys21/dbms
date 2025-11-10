@@ -1,0 +1,694 @@
+SQL
+chit 17
+-- create employee table
+CREATE TABLE Employee (
+  Eid INT PRIMARY KEY,
+  EName VARCHAR(50),
+  Address VARCHAR(50),
+  Salary DECIMAL(10,2),
+  Commission DECIMAL(10,2) NULL
+);
+
+-- create project table
+CREATE TABLE Project (
+  PrNo INT PRIMARY KEY,
+  Addr VARCHAR(50)
+);
+
+-- insert employee rows (commission NULL where no commission)
+INSERT INTO Employee (Eid, EName, Address, Salary, Commission) VALUES
+(1, 'Amit',  'Pune',  35000.00, 5000.00),
+(2, 'Sneha', 'Pune',  25000.00, NULL),
+(3, 'Savita','Nasik', 28000.00, 2000.00),
+(4, 'Pooja', 'Mumbai',19000.00, NULL),
+(5, 'Sagar', 'Mumbai',25000.00, 3000.00);
+
+-- insert project rows
+INSERT INTO Project (PrNo, Addr) VALUES
+(10, 'Mumbai'),
+(20, 'Pune'),
+(30, 'Jalgoan');
+
+Find different locations from where employees belong to
+
+SELECT DISTINCT Address AS City
+FROM Employee;
+
+
+What is maximum and minimum salary?
+
+SELECT MAX(Salary) AS MaxSalary, MIN(Salary) AS MinSalary
+FROM Employee;
+
+
+Display the content of employee table according to the ascending order of salary amount
+
+SELECT *
+FROM Employee
+ORDER BY Salary ASC;
+
+
+Find the name of employee who lived in Nasik or Pune city
+
+SELECT EName
+FROM Employee
+WHERE Address IN ('Nasik','Pune');
+
+
+Find the name of employees who does not get commission
+
+SELECT EName
+FROM Employee
+WHERE Commission IS NULL;
+
+
+Change the city of Amit to Nashik
+
+UPDATE Employee
+SET Address = 'Nasik'
+WHERE EName = 'Amit';
+
+
+Find the information of employees whose name starts with ‘A’
+
+SELECT *
+FROM Employee
+WHERE EName LIKE 'A%';
+
+
+Find the count of staff from Mumbai
+
+SELECT COUNT(*) AS StaffFromMumbai
+FROM Employee
+WHERE Address = 'Mumbai';
+
+
+Find the count of staff from each city
+
+SELECT Address, COUNT(*) AS StaffCount
+FROM Employee
+GROUP BY Address;
+
+
+Find the address from where employees are belonging as well as where projects are going on
+
+(a) All addresses combined (union of distinct cities from both tables)
+
+SELECT DISTINCT Address FROM Employee
+UNION
+SELECT DISTINCT Addr FROM Project;
+
+
+(b) Cities where both employees exist and projects run (intersection)
+
+SELECT DISTINCT e.Address AS City
+FROM Employee e, Project p
+WHERE e.Address = p.Addr;
+
+
+Find city wise minimum salary
+
+SELECT Address, MIN(Salary) AS MinSalary
+FROM Employee
+GROUP BY Address;
+
+
+Find city wise maximum salary having maximum salary greater than 26000
+
+SELECT Address, MAX(Salary) AS MaxSalary
+FROM Employee
+GROUP BY Address
+HAVING MAX(Salary) > 26000;
+
+
+Delete the employee who is having salary greater than 30,000
+
+DELETE FROM Employee
+WHERE Salary > 30000.00;
+
+chit 19
+
+CREATE TABLE emp (
+    Eno INT AUTO_INCREMENT PRIMARY KEY,   
+    Ename VARCHAR(50) NOT NULL,            
+    Address VARCHAR(50) DEFAULT 'Nashik', 
+    Joindate DATE,
+    Salary DECIMAL(10,2)                   
+);
+
+Set the sequence to start from 101
+ALTER TABLE emp AUTO_INCREMENT = 101;
+
+Add a new column Post after table creation
+ALTER TABLE emp ADD Post VARCHAR(50);
+
+Insert some sample data
+INSERT INTO emp (Ename, Address, Joindate, Salary, Post)
+VALUES
+('Amit', DEFAULT, '2024-01-10', 35000.00, 'Manager'),
+('Sneha', 'Pune', '2024-02-15', 25000.00, 'Clerk'),
+('Savita', 'Nashik', '2024-03-20', 28000.00, 'HR'),
+('Pooja', 'Mumbai', '2024-04-12', 19000.00, 'Analyst'),
+('Sagar', 'Mumbai', '2024-05-05', 25000.00, 'Developer');
+
+Create an index on Ename
+CREATE INDEX idx_ename ON emp(Ename);
+
+Create a view to show only Ename and Salary
+CREATE VIEW emp_view AS
+SELECT Ename, Salary
+FROM emp;
+
+Display data from the view
+SELECT * FROM emp_view;
+
+
+chit 24
+
+Step 1: Create Tables
+CREATE TABLE Emp (
+    emp_id INT PRIMARY KEY,
+    ename VARCHAR(50) NOT NULL,
+    street VARCHAR(50),
+    city VARCHAR(50)
+);
+
+CREATE TABLE Company (
+    c_id INT PRIMARY KEY,
+    cname VARCHAR(50),
+    city VARCHAR(50)
+);
+
+CREATE TABLE Works (
+    emp_id INT,
+    c_id INT,
+    ename VARCHAR(50),
+    cname VARCHAR(50),
+    sal DECIMAL(10,2),
+    FOREIGN KEY (emp_id) REFERENCES Emp(emp_id),
+    FOREIGN KEY (c_id) REFERENCES Company(c_id)
+);
+
+CREATE TABLE Manager (
+    mgr_id INT PRIMARY KEY,
+    mgrname VARCHAR(50)
+);
+
+Step 2: Insert Sample Data
+Employee Table
+INSERT INTO Emp (emp_id, ename, street, city) VALUES
+(101, 'Amit', 'MG Road', 'Pune'),
+(102, 'Sneha', 'Main Street', 'Nashik'),
+(103, 'Savita', 'FC Road', 'Pune'),
+(104, 'Pooja', 'Link Road', 'Mumbai'),
+(105, 'Sagar', 'Civil Lines', 'Pune'),
+(106, 'Ravi', 'Laxmi Road', 'Nagpur'),
+(107, 'Priya', 'Tilak Road', 'Pune');
+
+Company Table
+INSERT INTO Company (c_id, cname, city) VALUES
+(201, 'ABC', 'Mumbai'),
+(202, 'Bosch', 'Pune'),
+(203, 'SBC', 'Nashik'),
+(204, 'Mbank', 'Pune'),
+(205, 'TCS', 'Mumbai');
+
+Works Table
+INSERT INTO Works (emp_id, c_id, ename, cname, sal) VALUES
+(101, 201, 'Amit', 'ABC', 32000),
+(102, 202, 'Sneha', 'Bosch', 25000),
+(103, 202, 'Savita', 'Bosch', 48000),
+(104, 203, 'Pooja', 'SBC', 55000),
+(105, 204, 'Sagar', 'Mbank', 22000),
+(106, 204, 'Ravi', 'Mbank', 18000),
+(107, 205, 'Priya', 'TCS', 60000);
+
+Manager Table
+INSERT INTO Manager (mgr_id, mgrname) VALUES
+(301, 'Sagar'),
+(302, 'Ravi');
+
+Step 3: Verify the data
+
+Run these to confirm everything looks correct:
+
+SELECT * FROM Emp;
+SELECT * FROM Company;
+SELECT * FROM Works;
+SELECT * FROM Manager;
+
+
+Update company city:
+
+UPDATE Company SET city = 'Pune' WHERE cname = 'ABC';
+
+
+Give managers of Mbank a raise:
+
+UPDATE Works w
+JOIN Manager m ON w.ename = m.mgrname
+SET w.sal = CASE
+              WHEN w.sal > 20000 THEN w.sal * 1.03
+              ELSE w.sal * 1.10
+            END
+WHERE w.cname = 'Mbank';
+
+
+Find employees who work in Bosch in Pune:
+
+SELECT DISTINCT w.ename
+FROM Works w ,
+JOIN Company c ON w.c_id = c.c_id
+WHERE c.cname = 'Bosch' AND c.city = 'Pune';
+
+
+Delete works entries for SBC company with salary > 50000:
+
+DELETE w
+FROM Works w
+JOIN Company c ON w.c_id = c.c_id
+WHERE c.cname = 'SBC' AND w.sal > 50000;
+
+chit 24
+CREATE TABLE Emp (
+    emp_id INT PRIMARY KEY,
+    ename VARCHAR(50) NOT NULL,
+    street VARCHAR(50),
+    city VARCHAR(50)
+);
+
+CREATE TABLE Company (
+    c_id INT PRIMARY KEY,
+    cname VARCHAR(50),
+    city VARCHAR(50)
+);
+
+CREATE TABLE Works (
+    emp_id INT,
+    c_id INT,
+    ename VARCHAR(50),
+    cname VARCHAR(50),
+    sal DECIMAL(10,2),
+    FOREIGN KEY (emp_id) REFERENCES Emp(emp_id),
+    FOREIGN KEY (c_id) REFERENCES Company(c_id)
+);
+
+CREATE TABLE Manager (
+    mgr_id INT PRIMARY KEY,
+    mgrname VARCHAR(50)
+);
+
+INSERT INTO Emp (emp_id, ename, street, city) VALUES
+(101, 'Amit', 'MG Road', 'Pune'),
+(102, 'Sneha', 'Main Street', 'Nashik'),
+(103, 'Savita', 'FC Road', 'Pune'),
+(104, 'Pooja', 'Link Road', 'Mumbai'),
+(105, 'Sagar', 'Civil Lines', 'Pune'),
+(106, 'Ravi', 'Laxmi Road', 'Nagpur'),
+(107, 'Priya', 'Tilak Road', 'Pune');
+
+INSERT INTO Company (c_id, cname, city) VALUES
+(201, 'ABC', 'Mumbai'),
+(202, 'Bosch', 'Pune'),
+(203, 'SBC', 'Nashik'),
+(204, 'Mbank', 'Pune'),
+(205, 'TCS', 'Mumbai');
+
+INSERT INTO Works (emp_id, c_id, ename, cname, sal) VALUES
+(101, 201, 'Amit', 'ABC', 32000),
+(102, 202, 'Sneha', 'Bosch', 25000),
+(103, 202, 'Savita', 'Bosch', 48000),
+(104, 203, 'Pooja', 'SBC', 55000),
+(105, 204, 'Sagar', 'Mbank', 22000),
+(106, 204, 'Ravi', 'Mbank', 18000),
+(107, 205, 'Priya', 'TCS', 60000);
+
+INSERT INTO Manager (mgr_id, mgrname) VALUES
+(301, 'Sagar'),
+(302, 'Ravi');
+
+UPDATE Company SET city='Pune' WHERE cname='ABC'; 
+
+//or//
+SELECT c_id FROM Company WHERE cname='ABC';
+UPDATE Company
+SET city='Pune'
+WHERE c_id = 201;
+
+
+SET SQL_SAFE_UPDATES = 0;
+UPDATE Works
+SET sal = CASE
+             WHEN sal > 20000 THEN sal * 1.03
+             ELSE sal * 1.10
+          END
+WHERE cname = 'Mbank'
+AND ename IN (SELECT mgrname FROM Manager);
+SET SQL_SAFE_UPDATES = 1;
+
+select w.ename from Works w , Company c
+where w.c_id=c.c_id and 
+c.cname='Bosch' and c.city='Pune';
+
+SET SQL_SAFE_UPDATES = 0;
+
+DELETE FROM Works
+WHERE cname = 'SBC' 
+  AND sal > 50000;
+
+SET SQL_SAFE_UPDATES = 1;
+
+chit 25
+
+Step 1: Create Tables
+CREATE TABLE Empl (
+  e_no INT PRIMARY KEY,
+  e_name VARCHAR(50),
+  post VARCHAR(50),
+  pay_rate DECIMAL(10,2)
+);
+
+CREATE TABLE Position (
+  pos_no INT PRIMARY KEY,
+  post VARCHAR(50)
+);
+
+CREATE TABLE Duty_alloc (
+  pos_no INT,
+  e_no INT,
+  month VARCHAR(20),
+  year INT,
+  shift VARCHAR(20)
+);
+
+Step 2: Insert Sample Data
+Employee Table
+INSERT INTO Empl (e_no, e_name, post, pay_rate) VALUES
+(101, 'Amit', 'Manager', 40000.00),
+(102, 'Sneha', 'Clerk', 25000.00),
+(103, 'Sachin', 'Manager', 38000.00),
+(104, 'Pooja', 'Supervisor', 30000.00),
+(105, 'Sagar', 'Manager', 42000.00),
+(123, 'Ravi', 'Clerk', 22000.00);
+
+Position Table
+INSERT INTO Position (pos_no, post) VALUES
+(1, 'Manager'),
+(2, 'Clerk'),
+(3, 'Supervisor');
+
+Duty Allocation Table
+INSERT INTO Duty_alloc (pos_no, e_no, month, year, shift) VALUES
+(1, 101, 'April', 2003, 'First'),
+(2, 123, 'April', 2003, 'First'),
+(1, 103, 'April', 2003, 'Second'),
+(1, 105, 'May', 2003, 'First'),
+(3, 104, 'April', 2003, 'Second'),
+(1, 101, 'April', 2003, 'Third');
+
+SELECT *
+FROM Duty_alloc
+WHERE e_no = 123
+  AND shift = 'First'
+  AND month = 'April'
+  AND year = 2003;
+
+
+SELECT *
+FROM Empl
+WHERE pay_rate >= (
+  SELECT pay_rate FROM Empl WHERE e_name = 'Sachin'
+);
+
+CREATE VIEW post_salary_summary AS
+SELECT post,
+       MIN(pay_rate) AS Min_Salary,
+       MAX(pay_rate) AS Max_Salary,
+       AVG(pay_rate) AS Avg_Salary
+FROM Empl
+GROUP BY post;
+
+To see the view:
+SELECT * FROM post_salary_summary;
+
+SELECT d.shift,
+       COUNT(DISTINCT d.e_no) AS Employee_Count
+FROM Duty_alloc d, Empl e
+WHERE d.e_no = e.e_no
+  AND e.post = 'Manager'
+GROUP BY d.shift;
+
+
+chit 8
+
+Step 1: Create Tables
+CREATE TABLE teaches (
+  T_ID INT,
+  course_id VARCHAR(10),
+  sec_id INT,
+  semester VARCHAR(20),
+  year INT
+);
+
+CREATE TABLE student (
+  S_ID INT PRIMARY KEY,
+  name VARCHAR(50),
+  dept_name VARCHAR(50),
+  tot_cred INT
+);
+
+CREATE TABLE instructor (
+  T_ID INT PRIMARY KEY,
+  name VARCHAR(50),
+  dept_name VARCHAR(50),
+  salary DECIMAL(10,2)
+);
+
+CREATE TABLE course (
+  course_id VARCHAR(10) PRIMARY KEY,
+  title VARCHAR(50),
+  dept_name VARCHAR(50),
+  credits INT
+);
+
+Step 2: Insert Sample Data
+Instructor Table
+INSERT INTO instructor (T_ID, name, dept_name, salary) VALUES
+(101, 'Amit', 'Computer', 50000),
+(102, 'Sneha', 'IT', 48000),
+(103, 'Pooja', 'Mechanical', 52000),
+(104, 'Sagar', 'Computer', 47000);
+
+Student Table
+INSERT INTO student (S_ID, name, dept_name, tot_cred) VALUES
+(1, 'Ravi', 'Computer', 120),
+(2, 'Priya', 'IT', 110),
+(3, 'Asha', 'Mechanical', 130),
+(4, 'Nikhil', NULL, 90),
+(5, 'Komal', 'Computer', 100);
+
+Course Table
+INSERT INTO course (course_id, title, dept_name, credits) VALUES
+('CS101', 'Database Systems', 'Computer', 4),
+('CS102', 'Data Structures', 'Computer', 3),
+('IT201', 'Networking', 'IT', 4),
+('ME101', 'Thermodynamics', 'Mechanical', 4);
+
+Teaches Table
+INSERT INTO teaches (T_ID, course_id, sec_id, semester, year) VALUES
+(101, 'CS101', 1, 'Spring', 2023),
+(101, 'CS102', 2, 'Fall', 2023),
+(102, 'IT201', 1, 'Spring', 2023),
+(103, 'ME101', 1, 'Fall', 2023),
+(104, 'CS101', 1, 'Spring', 2024);
+
+Step 3: Required Queries
+Find the names of instructors who have taught courses semester-wise
+
+
+SELECT DISTINCT i.name, t.semester, t.year
+FROM instructor i, teaches t
+WHERE i.T_ID = t.T_ID
+ORDER BY t.year, t.semester;
+
+Create a View on a single table to retrieve student details
+
+CREATE VIEW student_details AS
+SELECT S_ID, name, dept_name, tot_cred
+FROM student;
+
+
+To see the view:
+
+SELECT * FROM student_details;
+
+Rename the column dept_name to department_name
+
+
+ALTER TABLE student
+CHANGE dept_name department_name VARCHAR(50);
+
+
+
+Delete student names whose department is NULL
+
+DELETE FROM student
+WHERE department_name IS NULL;
+
+chit 4
+Step 1: Create Tables
+CREATE TABLE student (
+  S_ID INT PRIMARY KEY,
+  name VARCHAR(50),
+  dept_name VARCHAR(50),
+  tot_cred INT
+);
+
+CREATE TABLE instructor (
+  T_ID INT PRIMARY KEY,
+  name VARCHAR(50),
+  dept_name VARCHAR(50),
+  salary DECIMAL(10,2)
+);
+
+CREATE TABLE course (
+  course_id VARCHAR(10) PRIMARY KEY,
+  title VARCHAR(50),
+  dept_name VARCHAR(50),
+  credits INT
+);
+
+-- Optional: link table (to know which student takes which course)
+CREATE TABLE takes (
+  S_ID INT,
+  course_id VARCHAR(10)
+);
+
+Step 2: Insert Sample Data
+Student Table
+INSERT INTO student (S_ID, name, dept_name, tot_cred) VALUES
+(1, 'Amit', 'Computer', 120),
+(2, 'Amol', 'IT', 110),
+(3, 'Kamal', 'Computer', 100),
+(4, 'Samir', 'Mechanical', 90),
+(5, 'Anamika', 'Computer', 105),
+(6, 'Pramod', 'Civil', 95);
+
+Instructor Table
+INSERT INTO instructor (T_ID, name, dept_name, salary) VALUES
+(101, 'Amit', 'Computer', 50000),
+(102, 'Sneha', 'Computer', 45000),
+(103, 'Amol', 'IT', 40000),
+(104, 'Ravi', 'Mechanical', 47000),
+(105, 'Pooja', 'Civil', 41000),
+(106, 'Sagar', 'Computer', 55000);
+
+Course Table
+INSERT INTO course (course_id, title, dept_name, credits) VALUES
+('CS101', 'DBMS', 'Computer', 4),
+('CS102', 'Data Structures', 'Computer', 3),
+('IT201', 'Networking', 'IT', 4),
+('ME101', 'Thermodynamics', 'Mechanical', 4),
+('CV101', 'Surveying', 'Civil', 3);
+
+Takes Table (which students take which course)
+INSERT INTO takes (S_ID, course_id) VALUES
+(1, 'CS101'),
+(2, 'IT201'),
+(3, 'CS101'),
+(3, 'CS102'),
+(4, 'ME101'),
+(5, 'CS101'),
+(6, 'CV101');
+
+Step 3: Queries
+Find average salary of departments where avg salary > 42000
+SELECT dept_name,
+       AVG(salary) AS avg_salary
+FROM instructor
+GROUP BY dept_name
+HAVING AVG(salary) > 42000;
+
+Increase salary of instructors in Computer dept by 10%
+SET SQL_SAFE_UPDATES = 0;
+
+UPDATE instructor
+SET salary = salary * 1.10
+WHERE dept_name = 'Computer';
+
+SET SQL_SAFE_UPDATES = 1;
+
+Instructors whose names are neither 'Amol' nor 'Amit'
+SELECT name
+FROM instructor
+WHERE name NOT IN ('Amol', 'Amit');
+
+Names of Computer department students who take the DBMS course
+SELECT DISTINCT s.name
+FROM student s, takes t, course c
+WHERE s.S_ID = t.S_ID
+  AND t.course_id = c.course_id
+  AND s.dept_name = 'Computer'
+  AND c.title = 'DBMS';
+
+
+chit 1
+
+create table customer(cid int primary key, cname varchar(20) not null, city varchar(20) not null);
+desc customer;
+INSERT INTO Customer VALUES
+(1, 'John', 'Nashik'),
+(2, 'Seema', 'Aurangabad'),
+(3, 'Amita', 'Nagar'),
+(4, 'Rakesh', 'Pune'),
+(5, 'Samata', 'Nashik'),
+(6, 'Ankita', 'Chandwad'),
+(7, 'Bhavika', 'Pune'),
+(8, 'Deepa', 'Mumbai'),
+(9, 'Nitin', 'Nagpur'),
+(10, 'Pooja', 'Pune');
+
+select * from customer;
+select * from account;
+CREATE TABLE Account (
+  cid INT,
+  acc_type VARCHAR(20),
+  amount DECIMAL(10,2),
+  FOREIGN KEY (cid) REFERENCES Customer(cid)
+);
+
+INSERT INTO Account VALUES
+(1, 'Current', 5000),
+(2, 'Saving', 20000),
+(3, 'Saving', 70000),
+(4, 'Saving', 50000),
+(6, 'Current', 35000),
+(7, 'Loan', 30000),
+(8, 'Saving', 50000),
+(9, 'Saving', 9000),
+(10, 'Loan', 8000),
+(5, 'Current', 45000);
+
+select c.cname, a.acc_type, a.amount
+from customer c join Account a on c.cid=a.cid
+where a.acc_type='Saving';
+
+select * from customer c natural join Account a;
+select c.*,a.* from customer c left join Account a on c.cid=a.cid;
+
+select c.* from customer c where c.city=(select c.city from customer c where c.cname='Pooja');
+
+select a.* from Account a where a.amount<( select avg(a.amount) as avg_amt from Account a);
+
+select cid from Account where amount = (select max(amount) from Account);
+
+select min(amount),acc_type from Account group by acc_type;
+
+SELECT Amount
+FROM Account
+WHERE Amount > any (
+    SELECT Amount
+    FROM Account
+    WHERE Acc_Type = 'Saving'
+);
+
