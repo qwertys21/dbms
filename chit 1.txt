@@ -1,0 +1,87 @@
+chit 1
+
+CREATE TABLE Customer (
+  C_Id INT PRIMARY KEY,
+  Cname VARCHAR(50),
+  City VARCHAR(50)
+);
+
+CREATE TABLE Account (
+  C_Id INT,
+  Acc_Type VARCHAR(20),
+  Amount INT
+);
+
+
+INSERT INTO Customer VALUES
+(1, 'John', 'Nashik'),
+(2, 'Seema', 'Aurangabad'),
+(3, 'Amita', 'Nagar'),
+(4, 'Rakesh', 'Pune'),
+(5, 'Samata', 'Nashik'),
+(6, 'Ankita', 'Chandwad'),
+(7, 'Bhavika', 'Pune'),
+(8, 'Deepa', 'Mumbai'),
+(9, 'Nitin', 'Nagpur'),
+(10, 'Pooja', 'Pune');
+
+INSERT INTO Account VALUES
+(1, 'Current', 5000),
+(2, 'Saving', 20000),
+(3, 'Saving', 70000),
+(4, 'Saving', 50000),
+(6, 'Current', 35000),
+(7, 'Loan', 30000),
+(8, 'Saving', 50000),
+(9, 'Saving', 90000),
+(10, 'Loan', 8000),
+(11, 'Current', 45000);
+
+-- 1. cname, Acc_Type, amount of customers who have a saving account
+SELECT c.Cname, a.Acc_Type, a.Amount
+FROM Customer c
+JOIN Account a ON c.C_Id = a.C_Id
+WHERE a.Acc_Type = 'Saving';
+
+
+-- 2. Display using NATURAL, LEFT and RIGHT join
+-- (NATURAL JOIN requires same column names; here join by C_id)
+SELECT * FROM Customer NATURAL JOIN Account;
+SELECT c.C_Id, c.Cname, c.City, a.Acc_Type, a.Amount
+FROM Customer c LEFT JOIN Account a
+ON c.C_Id = a.C_Id;
+SELECT c.C_Id, c.Cname, c.City, a.Acc_Type, a.Amount
+FROM Customer c RIGHT JOIN Account a
+ON c.C_Id = a.C_Id;
+
+
+-- 3. Customers living in same city as 'pooja'
+SELECT * FROM Customer
+WHERE City = (SELECT City FROM Customer WHERE Cname = 'Pooja');
+
+-- 4. Accounts having amount less than average amount across bank
+SELECT * FROM Account
+WHERE Amount < (SELECT AVG(Amount) FROM Account);
+
+-- 5. C_id having maximum amount in account
+SELECT C_Id FROM Account
+WHERE Amount = (SELECT MAX(Amount) FROM Account);
+
+-- 6. amount and acc_type of those customers whose amount is minimum for that Acc_type
+SELECT Acc_Type, Amount
+FROM Account a
+WHERE Amount = (
+  SELECT MIN(Amount)
+  FROM Account b
+  WHERE a.Acc_Type = b.Acc_Type
+);
+
+
+select min(amount),acc_type from Account group by acc_type;
+
+
+-- 7. amount of accounts whose amount is higher than amount of any saving account amount
+-- (i.e., greater than ALL saving amounts)
+SELECT Amount
+FROM Account
+WHERE Amount > ANY (SELECT Amount FROM Account WHERE Acc_Type = 'Saving');

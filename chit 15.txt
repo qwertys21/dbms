@@ -1,0 +1,52 @@
+chit 15
+use Institute;
+db.students.drop();
+db.createCollection("students");
+
+db.Students.insertMany([
+    { RollNo: 1, StudentName: "Amit", Age: 18, Branch: "IT", Address: { City: "Pune", State: "MH" }, Hobbies: ["Cricket", "Reading"] },
+    { RollNo: 2, StudentName: "Anita", Age: 17, Branch: "Computer", Address: { City: "Mumbai", State: "MH" }, Hobbies: ["Dancing", "Music"] },
+    { RollNo: 3, StudentName: "Raj", Age: 16, Branch: "Mechanical", Address: { City: "Pune", State: "MH" }, Hobbies: ["Gaming", "Coding"] },
+    { RollNo: 4, StudentName: "Priya", Age: 19, Branch: "Civil", Address: { City: "Nashik", State: "MH" }, Hobbies: ["Painting", "Travel"] },
+    { RollNo: 5, StudentName: "Arun", Age: 18, Branch: "Computer", Address: { City: "Pune", State: "MH" }, Hobbies: ["Sports", "Movies"] },
+    { RollNo: 6, StudentName: "Sneha", Age: 17, Branch: "IT", Address: { City: "Mumbai", State: "MH" }, Hobbies: ["Reading", "Yoga"] },
+    { RollNo: 7, StudentName: "Vijay", Age: 20, Branch: "Electronics", Address: { City: "Pune", State: "MH" }, Hobbies: ["Music", "Cricket"] },
+    { RollNo: 8, StudentName: "Asha", Age: 16, Branch: "Computer", Address: { City: "Kolhapur", State: "MH" }, Hobbies: ["Dance", "Cooking"] },
+    { RollNo: 9, StudentName: "Arjun", Age: 19, Branch: "IT", Address: { City: "Pune", State: "MH" }, Hobbies: ["Gaming", "Reading"] },
+    { RollNo: 10, StudentName: "Neha", Age: 18, Branch: "Civil", Address: { City: "Aurangabad", State: "MH" }, Hobbies: ["Travel", "Photography"] }
+]);
+
+// 4. Display all
+db.students.find().pretty();
+
+// 5. age > 15
+db.students.find({Age: {$gt: 15}});
+
+// 6. sorted on name
+db.students.find().sort({StudentName:1});
+
+// 7. Update branch to Computer of RollNo 3
+db.students.updateOne({RollNo:3}, {$set: {Branch:'Computer'}});
+
+// 8. Remove doc with RollNo 1
+db.students.deleteOne({RollNo:1});
+
+// 9. Name starts with A
+db.students.find({StudentName: /^A/});
+
+// 10. total number of documents
+db.students.countDocuments();
+
+// 11. only first 5 documents
+db.students.find().limit(5);
+
+// 12. db.Students.find().skip(3);
+
+// 13. names of students in Pune City
+db.students.find({"Address.City":"Pune"}, {StudentName:1, _id:0});
+
+// 14. only Name of all students
+db.students.find({}, {StudentName:1, _id:0});
+
+// 15. Drop collection
+db.students.drop();

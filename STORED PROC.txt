@@ -1,0 +1,48 @@
+STORED PROC
+
+
+PLSQL CODE
+SET SERVEROUTPUT ON;
+
+DECLARE
+roll_no NUMBER :=&roll_no;
+BEGIN
+prasad(roll_no);
+END;
+
+
+
+
+CREATE OR REPLACE PROCEDURE prasad (p_name IN VARCHAR2) AS
+
+p_total_marks INT;
+p_class VARCHAR2(50);
+v_status VARCHAR2(50);
+
+BEGIN
+SELECT total INTO p_total_marks
+FROM marks
+WHERE name=p_name;
+
+IF p_total_marks>=990 AND p_total_marks<=1500 THEN
+v_status :='DISTINCTION';
+ELSIF
+p_total_marks>=900 AND p_total_marks<=989 THEN
+v_status :='first class';
+ELSIF p_total_marks>=825 AND p_total_marks<=899 THEN
+v_status :='high sec class';
+ELSE
+v_status :='below criteria';
+END IF;
+INSERT INTO result(roll_,name,class)
+VALUES(p_roll,p_name,v_status);
+
+EXCEPTION
+WHEN NO_DATA_FOUND THEN
+DBMS_OUTPUT.PUT_LINE('INVLAID INPUT');
+WHEN OTHERS THEN
+DBMS_OUTPUT.PUT_LINE('INVALID');
+END;
+
+
+

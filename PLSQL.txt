@@ -1,0 +1,44 @@
+PLSQL 
+
+
+SET SERVEROUTPUT ON;
+
+DECLARE
+roll_no NUMBER := &roll_no;
+name_of_book VARCHAR2(20) := '&name_of_book';
+date_issue DATE;
+days_kept NUMBER;
+fine_amount NUMBER := 0;
+
+BEGIN
+SELECT date_of_issue INTO date_issue
+FROM BORROWER
+WHERE roll=roll_no AND name_of_book=name_of_book;
+
+days_kept := TRUNC(SYSDATE-date_issue);
+
+IF days_kept>30 THEN
+fine_amount := days_kept*50;
+ELSIF days_kept>15 THEN
+fine_amount := days_kept*5;
+END IF;
+
+UPDATE BORROWER SET status='r'
+WHERE roll=roll_no AND name_of_book=name_of_book;
+
+IF fine_amount>0 THEN
+INSERT INTO FINENEW VALUES(roll_no,SYSDATE,fine_amount);
+END IF;
+
+DBMS_OUTPUT.PUT_LINE('BOOK RETURNED');
+DBMS_OUTPUT.PUT_LINE('TOTAL DAYS KEP'|| days_kept);
+DBMS_OUTPUT.PUT_LINE('TOTAL FINE'|| fine_amount);
+
+EXCEPTION
+WHEN NO_DATA_FOUND THEN
+DBMS_OUTPUT.PUT_LINE('ENTER DATA');
+WHEN OTHERS THEN
+DBMS_OUTPUT.PUT_LINE('INVALID');
+END;
+
+

@@ -1,0 +1,68 @@
+chit 21
+// Step 1: Switch to database
+use orderDB
+
+// Step 2: Create collection and insert sample data
+db.orderinfo.insertMany([
+    {
+        cust_id: 123,
+        cust_name: "abc",
+        status: "A",
+        price: 250
+    },
+    {
+        cust_id: 124,
+        cust_name: "xyz",
+        status: "A",
+        price: 300
+    },
+    {
+        cust_id: 125,
+        cust_name: "pqr",
+        status: "B",
+        price: 450
+    },
+    {
+        cust_id: 126,
+        cust_name: "def",
+        status: "B",
+        price: 500
+    },
+    {
+        cust_id: 127,
+        cust_name: "lmn",
+        status: "C",
+        price: 350
+    },
+    {
+        cust_id: 128,
+        cust_name: "rst",
+        status: "A",
+        price: 400
+    },
+    {
+        cust_id: 129,
+        cust_name: "uvw",
+        status: "B",
+        price: 600
+    },
+    {
+        cust_id: 130,
+        cust_name: "ghi",
+        status: "C",
+        price: 280
+    }
+]);
+
+use test;
+db.orderinfo.updateMany({}, {$set: {Age: 25}}); // i. Add Age field
+
+// ii. Create complex index and drop duplicates (example compound index)
+db.orderinfo.createIndex({cust_id:1, status:1});
+db.orderinfo.find().explain();
+
+// iii. Average price group by status
+db.orderinfo.aggregate([{ $group: {_id:"$status", avgPrice: {$avg:"$price"}} }]);
+
+// iv. Change customer name whose status is 'B'
+db.orderinfo.updateMany({status: 'B'}, {$set: {cust_name: 'ChangedName'}});

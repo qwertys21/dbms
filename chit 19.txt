@@ -1,0 +1,21 @@
+chit 19
+CREATE TABLE emp (
+    Eno INT PRIMARY KEY AUTO_INCREMENT,
+    Ename VARCHAR(100) NOT NULL,
+    Address VARCHAR(255) DEFAULT 'Nashik',
+    Joindate DATE,
+    Salary DECIMAL(12, 2)
+) AUTO_INCREMENT = 101;
+
+-- 2. Add field Post
+ALTER TABLE emp ADD COLUMN Post VARCHAR(50);
+
+-- 3. Insert sample data
+INSERT INTO emp (Eno,Ename,Address,Joindate,Post) VALUES (101,'Amit',NULL,'2024-01-05','Manager'),(102,'Ravi','Mumbai','2023-05-10','Clerk');
+
+-- 4. Create Index on Ename
+CREATE INDEX idx_ename ON emp(Ename);
+
+-- 5. Create View to show only Ename and Salary (assuming salary column exists; if not, add salary)
+ALTER TABLE emp ADD COLUMN Salary DECIMAL(10,2);
+CREATE VIEW emp_view AS SELECT Ename, Salary FROM emp;

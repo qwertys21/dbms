@@ -1,0 +1,55 @@
+chit 13
+// Step 1: Switch to database (creates if doesn't exist)
+use movieDB
+
+// Step 2: Create collection and insert documents
+db.movies.insertMany([
+    {
+        name: "Movie1",
+        type: "action",
+        budget: 1000000,
+        producer: {
+            name: "producer1",
+            address: "PUNE"
+        }
+    },
+    {
+        name: "Movie2",
+        type: "comedy",
+        budget: 500000,
+        producer: {
+            name: "producer2",
+            address: "MUMBAI"
+        }
+    },
+    {
+        name: "Movie3",
+        type: "drama",
+        budget: 1500000,
+        producer: {
+            name: "producer1",
+            address: "PUNE"
+        }
+    },
+    {
+        name: "Movie4",
+        type: "action",
+        budget: 80000,
+        producer: {
+            name: "producer3",
+            address: "DELHI"
+        }
+    }
+])
+
+// i. Movies with budget > 100000
+db.movies.find({budget: {$gt: 100000}}, {name:1, budget:1, _id:0});
+
+// ii. Producer who lives in Pune
+db.movies.find({"producer.address":"PUNE"}, {"producer.name":1, _id:0});
+
+// iii. Update type 'action' to 'horror'
+db.movies.updateMany({type:"action"}, {$set: {type:"horror"}});
+
+// iv. All documents produced by 'producer1' with their address
+db.movies.find({"producer.name":"producer1"}, {"producer":1, _id:0});

@@ -1,0 +1,27 @@
+chit 16
+use departmentDB;
+db.teacher.drop();
+db.teacher.insertMany([
+  {name:"Alice", department:"CS", experience:5, salary:12000},
+  {name:"Bob", department:"CS", experience:8, salary:15000},
+  {name:"Eve", department:"EE", experience:6, salary:18000}
+]);
+
+// 3. Department-wise average salary
+db.teacher.aggregate([
+  {$group: {_id: "$department", avgSalary: {$avg: "$salary"}}}
+]);
+
+// 4. Number of employees in each department
+db.teacher.aggregate([
+  {$group: {_id: "$department", count: {$sum:1}}}
+]);
+
+// 5. Department-wise minimum salary
+db.teacher.aggregate([
+  {$group: {_id: "$department", minSalary: {$min: "$salary"}}}
+]);
+
+// 6. Apply index and drop index
+db.teacher.createIndex({department:1});
+db.teacher.dropIndex("department_1");

@@ -1,0 +1,68 @@
+chit 22
+// Step 1: Switch to database
+use orderDB
+
+// Step 2: Create collection and insert sample data
+db.orderinfo.insertMany([
+    {
+        cust_id: 123,
+        cust_name: "abc",
+        status: "A",
+        price: 250
+    },
+    {
+        cust_id: 124,
+        cust_name: "xyz",
+        status: "B",
+        price: 300
+    },
+    {
+        cust_id: 125,
+        cust_name: "pqr",
+        status: "A",
+        price: 400
+    },
+    {
+        cust_id: 126,
+        cust_name: "def",
+        status: "C",
+        price: 250
+    },
+    {
+        cust_id: 127,
+        cust_name: "lmn",
+        status: "B",
+        price: 450
+    },
+    {
+        cust_id: 128,
+        cust_name: "rst",
+        status: "A",
+        price: 350
+    },
+    {
+        cust_id: 129,
+        cust_name: "uvw",
+        status: "C",
+        price: 500
+    },
+    {
+        cust_id: 130,
+        cust_name: "ghi",
+        status: "A",
+        price: 280
+    }
+]);
+
+// i. name of customer having price between 250 and 450
+db.orderinfo.find({price: {$gte:250, $lte:450}}, {cust_name:1, _id:0});
+
+// ii. Increment price by 10 for cust_id:123 and decrement by 5 for cust_id:124
+db.orderinfo.updateOne({cust_id:123}, {$inc: {price: 10}});
+db.orderinfo.updateOne({cust_id:124}, {$inc: {price: -5}});
+
+// iii. Remove any one field from orderinfo documents (e.g., drop Age)
+db.orderinfo.updateMany({}, {$unset: {Age: ""}});
+
+// iv. Find customers status A or price 250 or both
+db.orderinfo.find({$or: [{status:'A'}, {price:250}]});

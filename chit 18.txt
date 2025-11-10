@@ -1,0 +1,24 @@
+chit 18
+use locations;
+db.city.drop();
+db.city.insertMany([
+  {city:"pune", type:"urban", state:"MH", population:5600000},
+  {city:"nasik", type:"urban", state:"MH", population:1500000},
+  {city:"village1", type:"rural", state:"MH", population:20000}
+]);
+
+// MapReduce: statewise population
+var mapState = function() { emit(this.state, this.population); };
+var reduceSum = function(key, values) { return Array.sum(values); };
+db.city.mapReduce(mapState, reduceSum, {out: "state_pop"});
+db.state_pop.find();
+
+// citywise population
+var mapCity = function() { emit(this.city, this.population); };
+db.city.mapReduce(mapCity, reduceSum, {out: "city_pop"});
+db.city_pop.find();
+
+// typewise population
+var mapType = function() { emit(this.type, this.population); };
+db.city.mapReduce(mapType, reduceSum, {out: "type_pop"});
+db.type_pop.find();

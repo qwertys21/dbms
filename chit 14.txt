@@ -1,0 +1,26 @@
+chit 14
+use deptdb;
+db.teachers.drop(); db.department.drop(); db.students.drop();
+
+// 1. Insert sample documents
+db.teachers.insertMany([
+  {Tname:"John", dno:2, Experience:5, Salary:12000, Date_of_Joining: new Date("2018-05-10")},
+  {Tname:"Doe", dno:2, Experience:8, Salary:15000, Date_of_Joining: new Date("2016-03-01")}
+]);
+db.department.insertMany([{Dno:2,Dname:"CS"},{Dno:1,Dname:"EE"}]);
+db.students.insertMany([{Sname:"abc",Roll_No:2,Class:"SE"},{Sname:"xyz",Roll_No:5,Class:"FE"}]);
+
+// 2. Teachers of Dno=2 and salary >= 10000
+db.teachers.find({dno:2, Salary: {$gte:10000}});
+
+// 3. Student information having Roll_no=2 or Sname='xyz'
+db.students.find({$or:[{Roll_No:2},{Sname:'xyz'}]});
+
+// 4. Update student name whose Roll_No=5
+db.students.updateOne({Roll_No:5}, {$set: {Sname:"UpdatedName"}});
+
+// 5. Delete all students whose Class is 'FE'
+db.students.deleteMany({Class:'FE'});
+
+// 6. Apply index on Students collection
+db.students.createIndex({Roll_No:1});

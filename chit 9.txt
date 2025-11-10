@@ -1,0 +1,28 @@
+chit 9
+
+use test; // or desired DB
+db.orderinfo.drop();
+db.orderinfo.insertMany([
+  {cust_id:123, cust_name:"abc", status:"A", price:250},
+  {cust_id:124, cust_name:"def", status:"B", price:500},
+  {cust_id:125, cust_name:"ghi", status:"A", price:150}
+]);
+
+// i. average price for each customers having status 'A'
+db.orderinfo.aggregate([
+  {$match: {status: "A"}},
+  {$group: {_id: "$cust_id", avgPrice: {$avg: "$price"}}}
+]);
+
+ii.
+db.orderinfo.find(
+    { price: { $gte: 100, $lte: 1000 } },
+    { status: 1 }
+);
+
+iii.
+db.orderinfo.find({}, { _id: 0 });
+
+iv.
+db.orderinfo.createIndex({ cust_id: 1 });
+db.orderinfo.find({ cust_id: 123 });

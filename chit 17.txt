@@ -1,0 +1,70 @@
+chit 17
+CREATE TABLE Employee (
+  Eid INT PRIMARY KEY,
+  EName VARCHAR(50),
+  Address VARCHAR(50),
+  Salary INT,
+  Commission INT
+);
+
+CREATE TABLE Project (
+  PrNo INT PRIMARY KEY,
+  Addr VARCHAR(50)
+);
+
+INSERT INTO Employee VALUES
+(1, 'Amit', 'Pune', 35000, 5000),
+(2, 'Sneha', 'Pune', 25000, NULL),
+(3, 'Savita', 'Nasik', 28000, 2000),
+(4, 'Pooja', 'Mumbai', 19000, NULL),
+(5, 'Sagar', 'Mumbai', 25000, 3000);
+
+INSERT INTO Project VALUES
+(10, 'Mumbai'),
+(20, 'Pune'),
+(30, 'Jalgaon');
+
+--i. Find different locations from where employees belong
+SELECT DISTINCT Address FROM Employee;
+
+--ii. Find maximum and minimum salary
+SELECT MAX(Salary) AS Max_Salary, MIN(Salary) AS Min_Salary FROM Employee;
+
+--iii.Display employee table in ascending order of salary
+SELECT * FROM Employee ORDER BY Salary ASC;
+
+iv. Find names of employees who live in Nasik or Pune
+SELECT EName FROM Employee WHERE Address IN ('Nasik', 'Pune');
+
+--v.Find employees who do not get commission
+SELECT EName FROM Employee WHERE Commission IS NULL;
+
+--vi.Change the city of Amit to Nashik
+UPDATE Employee SET Address = 'Nashik' WHERE EName = 'Amit';
+
+--vii.Find information of employees whose name starts with 'A'
+SELECT * FROM Employee WHERE EName LIKE 'A%';
+
+--viii.Find the count of staff from Mumbai
+SELECT COUNT(*) AS Staff_From_Mumbai FROM Employee WHERE Address = 'Mumbai';
+
+--ix.Find the count of staff from each city
+SELECT Address, COUNT(*) AS Staff_Count FROM Employee GROUP BY Address;
+
+-- 10. Addresses where employees belong as well as where projects are going on
+-- (find cities that are in both tables)
+SELECT DISTINCT e.City
+FROM Employee e
+JOIN Project p ON e.City = p.City;
+
+-- 11. City-wise minimum salary
+SELECT City, MIN(Salary) FROM Employee GROUP BY City;
+
+-- 12. City-wise maximum salary having maximum salary > 26000
+SELECT City, MAX(Salary) AS max_sal
+FROM Employee
+GROUP BY City
+HAVING MAX(Salary) > 26000;
+
+-- 13. Delete employees with salary > 30000
+DELETE FROM Employee WHERE Salary > 30000;

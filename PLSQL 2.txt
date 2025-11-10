@@ -1,0 +1,34 @@
+PLSQL 2
+
+
+
+
+SET SERVEROUTPUT ON;
+
+DECLARE
+  roll_no NUMBER := &roll_no;
+  atten   NUMBER;
+BEGIN
+  SELECT att INTO atten
+  FROM stud
+  WHERE roll = roll_no;
+
+  IF atten < 75 THEN
+    UPDATE stud
+    SET status = 'D'
+    WHERE roll = roll_no;
+    DBMS_OUTPUT.PUT_LINE('TERM NOT GRANTED');
+  ELSE
+    UPDATE stud
+    SET status = 'G'
+    WHERE roll = roll_no;
+    DBMS_OUTPUT.PUT_LINE('TERM GRANTED');
+  END IF;
+
+EXCEPTION
+  WHEN NO_DATA_FOUND THEN
+    DBMS_OUTPUT.PUT_LINE('NO RECORD FOUND');
+  WHEN OTHERS THEN
+    DBMS_OUTPUT.PUT_LINE('UNEXPECTED ERROR: ' || SQLERRM);
+END;
+/
